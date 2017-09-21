@@ -36,7 +36,7 @@ public class Dots {
         this.listener.onDotsChanged(this);
     }
 
-    public int findDot(int x, int y) {
+    public int findDot(float x, float y) {
         for (int i = 0; i < allDot.size(); i++) {
             int centerX = allDot.get(i).getCenterX();
             int centerY = allDot.get(i).getCenterY();

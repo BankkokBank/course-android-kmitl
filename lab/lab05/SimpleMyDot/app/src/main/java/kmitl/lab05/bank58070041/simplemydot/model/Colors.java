@@ -23,4 +23,14 @@ public class Colors {
         return colorList.get(
                 new Random().nextInt(colorList.size()));
     }
+
+    public int randomColor(){
+
+        int r = new Random().nextInt(255);
+        int g = new Random().nextInt(255);
+        int b = new Random().nextInt(255);
+        return Color.rgb(r,g,b);
+    }
+
+
 }

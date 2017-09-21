@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -17,7 +18,29 @@ public class DotView extends View {
 
     private Paint paint;
     private Dots allDot;
+    private GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
 
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            DotView.this.onDotViewPressListener.onDotViewPressed((float) e.getX(), (float) e.getY());
+            return super.onSingleTapUp(e);
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            DotView.this.onDotViewPressListener.onDotViewLongPressed((float) e.getX(), (float) e.getY());
+        }
+
+    });
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
+    }
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -26,33 +49,23 @@ public class DotView extends View {
                 paint.setColor(dot.getColor());
                 canvas.drawCircle(
                         dot.getCenterX(),
-                        dot.getCenterY(), 30, paint);
+                        dot.getCenterY(), 50, paint);
             }
         }
     }
 
     public interface OnDotViewPressListener{
-        void onDotViewPressed(int x, int y);
+        void onDotViewPressed(float x, float y);
+        void onDotViewLongPressed(float x, float y);
     }
 
     private OnDotViewPressListener onDotViewPressListener;
+
     public void setOnDotViewPressListener(
             OnDotViewPressListener onDotViewPressListener) {
         this.onDotViewPressListener = onDotViewPressListener;
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                this.onDotViewPressListener
-                        .onDotViewPressed(
-                                (int)event.getX(),
-                                (int)event.getY());
-                return true;
-        }
-        return false;
-    }
 
     public DotView(Context context) {
         super(context);
@@ -73,4 +86,7 @@ public class DotView extends View {
     public void setDots(Dots dots) {
         this.allDot = dots;
     }
+
+
 }
+
