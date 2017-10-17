@@ -1,66 +1,76 @@
 package com.demo.lazy.instagram.mylazyinstargram.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.demo.lazy.instagram.mylazyinstargram.MainActivity;
+import com.demo.lazy.instagram.mylazyinstargram.PostModel;
 import com.demo.lazy.instagram.mylazyinstargram.R;
 
-/**
- * Created by student on 10/6/2017 AD.
- */
+import java.util.ArrayList;
+import java.util.List;
 
-class Holder extends RecyclerView.ViewHolder{
-    public ImageView image;
 
-    public Holder(View itemView){
-        super(itemView);
-        image = (ImageView) itemView.findViewById(R.id.image);
-    }
-}
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Holder> {
 
-public class PostAdapter extends RecyclerView.Adapter<Holder>{
+    private Activity activity;
+    private List<PostModel> data;
+    private String layout;
 
-        String[] data = {
-                "http://api.learn2crack.com/android/images/icecream.png",
-                "http://api.learn2crack.com/android/images/marshmallow.png",
-                "http://api.learn2crack.com/android/images/donut.png",
-                "http://api.learn2crack.com/android/images/lollipop.png"
-        };
-    private  Context context;
-    public PostAdapter(Context context) {
-        this.context = context;
+    public PostAdapter(Activity activity) {
+        this.activity = activity;
+        data = new ArrayList<>();
     }
 
+    public void setData(List<PostModel> data, String layout) {
+        this.data = data;
+        this.layout = layout;
+    }
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        //สร้าง รูป แล้วยัดใส่ลง  holder
-        LayoutInflater inflater =
-                LayoutInflater.from(parent.getContext());
-
-        View itemView =
-                inflater.inflate(R.layout.post_item, null, false);
-
-        Holder holder = new Holder(itemView);
-        return holder;
+        if (layout.equals("Grid")) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_item, null);
+            Holder holder = new Holder(itemView);
+            return holder;
+        } else {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_item2, null);
+            Holder holder = new Holder(itemView);
+            return holder;
+        }
     }
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        //การเอาข้อมูบ
-        ImageView image = holder.image;
-        Glide.with(context).load(data[position]).into(image);
+        String imageUrl = data.get(position).getUrl();
+        TextView like = holder.like;
+        TextView comment = holder.comment;
+        Glide.with(activity).load(imageUrl).into(holder.imageView);
+        like.setText(data.get(position).getLike());
+        comment.setText(data.get(position).getComment());
     }
 
     @Override
     public int getItemCount() {
-        return data.length;
+        return data.size();
+    }
+
+    static class Holder extends RecyclerView.ViewHolder {
+        ImageView imageView;
+        TextView like;
+        TextView comment;
+
+        public Holder(View itemView) {
+            super(itemView);
+            imageView = (ImageView) itemView.findViewById(R.id.imageView);
+            like = (TextView) itemView.findViewById(R.id.txtLike);
+            comment = (TextView) itemView.findViewById(R.id.txtComment);
+        }
     }
 }
-
