@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">DemoRecord</string>
+    <string name="clear_all">Clear All</string>
+</resources>
